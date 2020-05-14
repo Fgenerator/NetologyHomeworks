@@ -1,13 +1,13 @@
 def calculation(sign, a, b):
     ops = ['+', '-', '*', '/']
     try:
-        test = {
+        calculations = {
             '+': int(a) + int(b),
             '-': int(a) - int(b),
             '*': int(a) * int(b),
             '/': int(a) / int(b)
         }
-    except(ValueError):
+    except ValueError:
         print('Неверный тип аргументов.')
         main()
     try:
@@ -17,16 +17,16 @@ def calculation(sign, a, b):
         main()
     else:
         try:
-            return test[sign]
+            return calculations[sign]
         except ZeroDivisionError:
-                print('Деление на ноль.')
-                main()
+            print('Деление на ноль.')
+            main()
 
 
-def input_handling(input):
-    input = input.split()
+def input_handling(user_input):
+    user_input = user_input.split()
     try:
-        print(calculation(*input))
+        print(calculation(*user_input))
     except TypeError:
         print('Передано неверное количество аргументов')
         main()
@@ -38,4 +38,3 @@ def main():
 
 
 main()
-
