@@ -1,21 +1,27 @@
+import operator
+
+
 def calculation(sign, a, b):
-    try:
-        calculations = {
-            '+': int(a) + int(b),
-            '-': int(a) - int(b),
-            '*': int(a) * int(b),
-            '/': int(a) / int(b)
+    calculations = {
+            '+': operator.add,
+            '-': operator.sub,
+            '*': operator.mul,
+            '/': operator.truediv
         }
-    except (ValueError, ZeroDivisionError) as e:
-        print('Неверный тип аргументов.', e)
-        main()
     try:
         assert sign in calculations.keys()
     except AssertionError:
         print('Недопустимая операция.')
         main()
     else:
-        return calculations[sign]
+        try:
+            return calculations[sign](int(a), int(b))
+        except ValueError:
+            print('Неверный тип аргументов.')
+            main()
+        except ZeroDivisionError:
+            print('Деление на ноль.')
+            main()
 
 
 def input_handling(user_input):
