@@ -1,28 +1,30 @@
 def calculation(sign, a, b):
     ops = ['+', '-', '*', '/']
     try:
+        test = {
+            '+': int(a) + int(b),
+            '-': int(a) - int(b),
+            '*': int(a) * int(b),
+            '/': int(a) / int(b)
+        }
+    except(ValueError):
+        print('Неверный тип аргументов.')
+        main()
+    try:
         assert sign in ops
     except AssertionError:
         print('Недопустимая операция.')
         main()
     else:
-        if sign == '+':
-            return a + b
-        elif sign == '-':
-            return a - b
-        elif sign == '*':
-            return a * b
-        elif sign == '/':
-            try:
-                return a / b
-            except ZeroDivisionError:
+        try:
+            return test[sign]
+        except ZeroDivisionError:
                 print('Деление на ноль.')
                 main()
 
 
 def input_handling(input):
     input = input.split()
-    #print(calculation(input[0], int(input[1]), int(input[2])))
     try:
         print(calculation(*input))
     except TypeError:
@@ -31,7 +33,8 @@ def input_handling(input):
 
 
 def main():
-    input_handling(input('Введите данные: '))
+    while True:
+        input_handling(input('Введите данные: '))
 
 
 main()
