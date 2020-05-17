@@ -7,12 +7,13 @@ def read_cook_book_from_file(filename):
         cook_book = {}
         last_dish = ''
         for line in file:
-            if '|' not in line.strip() and len(line.strip()) and re.match('\D', line.strip()):
-                cook_book.setdefault(line.strip(), [])
-                last_dish = line.strip()
-            elif '|' in line.strip():
-                line = line.strip().split(' | ')
-                cook_book[last_dish].append({'ingredient_name': line[0], 'quantity': line[1], 'measure': line[2]})
+            line = line.strip()
+            if '|' not in line and len(line) and re.match('\D', line):
+                cook_book.setdefault(line, [])
+                last_dish = line
+            elif '|' in line:
+                line = line.split(' | ')
+                cook_book[last_dish].append({'ingredient_name': line[0], 'quantity': int(line[1]), 'measure': line[2]})
     return cook_book
 
 
@@ -21,13 +22,12 @@ def get_shop_list_by_dishes(dishes, person_count):
     shop_list = {}
     for dish in dishes:
         for ingredient in cook_book[dish]:
-            if list(ingredient.values())[0] in list(shop_list.keys()):
-                shop_list[list(ingredient.values())[0]]['quantity'] += int(list(ingredient.values())[1]) * person_count
+            if ingredient['ingredient_name'] in shop_list:
+                shop_list[ingredient['ingredient_name']]['quantity'] += ingredient['quantity'] * person_count
             else:
-                shop_list.setdefault(list(ingredient.values())[0],
-                                     {'measure': list(ingredient.values())[2],
-                                      'quantity': int(list(ingredient.values())[1]) * person_count
-                                      })
+                shop_list[ingredient['ingredient_name']] = {'measure': ingredient['measure'],
+                                                           'quantity': ingredient['quantity'] * person_count
+                                                           }
     return shop_list
 
 
