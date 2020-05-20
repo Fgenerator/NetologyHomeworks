@@ -1,9 +1,12 @@
-import datetime
+import time
 
 
 class Timer:
+    def __init__(self):
+        self.working_time = 0
+
     def __enter__(self):
-        self.begin = datetime.datetime.utcnow()
+        self.begin = time.monotonic()
         print(f'{self.begin}: начало работы.\n')
 
     def calculate_time(self):
@@ -13,20 +16,20 @@ class Timer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is not None:
             print(f'error: {exc_val}')
-        self.end = datetime.datetime.utcnow()
+        self.end = time.monotonic()
         print(f'{self.end}: конец работы.')
         print(f'{self.calculate_time()}: общее время работы.')
 
 
 def eratosthenes(n):
-    simples = []
+    primes = []
     for number in range(2, n + 1):
-        for simple_number in simples:
-            if number % simple_number == 0:
+        for prime_number in primes:
+            if number % prime_number == 0:
                 break
         else:
-            simples.append(number)
-    print(simples, '\n')
+            primes.append(number)
+    print(primes, '\n')
 
 
 if __name__ == '__main__':
