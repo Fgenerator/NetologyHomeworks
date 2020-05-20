@@ -14,7 +14,7 @@ class Timer:
         return self.working_time
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is not None:
+        if exc_type:
             print(f'error: {exc_val}')
         self.end = time.monotonic()
         print(f'{self.end}: конец работы.')
