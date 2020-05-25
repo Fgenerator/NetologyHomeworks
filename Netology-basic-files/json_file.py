@@ -21,7 +21,7 @@ def get_words(data):
 def main():
     data = open_json('newsafr.json')
     words = get_words(data)
-    print(Counter(words).most_common(10))
+    pprint(Counter(words).most_common(10))
 
 
 main()
