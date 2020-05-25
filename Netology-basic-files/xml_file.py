@@ -38,8 +38,8 @@ def main():
     texts = get_texts_from_items(items, 'description')
     words = get_words_from_texts(texts)
     top = Counter(words).most_common(10)
-    for item in top:
-        print(f'{item[0]} - {item[1]}')
+    for word, count in top:
+        print(f'{word} - {count}')
 
 
 main()
