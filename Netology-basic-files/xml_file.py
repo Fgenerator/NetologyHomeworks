@@ -37,7 +37,9 @@ def main():
     items = get_items_from_tree(tree, 'channel/item')
     texts = get_texts_from_items(items, 'description')
     words = get_words_from_texts(texts)
-    pprint(Counter(words).most_common(10))
+    top = Counter(words).most_common(10)
+    for item in top:
+        print(f'{item[0]} - {item[1]}')
 
 
 main()
