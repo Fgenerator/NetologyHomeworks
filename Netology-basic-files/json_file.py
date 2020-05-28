@@ -1,6 +1,5 @@
 import json
-from collections import Counter
-from pprint import pprint
+from words_funcs import *
 
 
 def open_json(file):
@@ -8,23 +7,26 @@ def open_json(file):
         return json.load(f)
 
 
-def get_words(data):
-    words = []
+def get_items_from_data(data):
+    items = []
     for item in data['rss']['channel']['items']:
-        text = item['description'].split()
-        for word in text:
-            if len(word) > 6:
-                words.append(word)
-    return words
+        items.append(item)
+    return items
+
+
+def get_texts_from_items(items, field):
+    texts = []
+    for item in items:
+        texts.append(item[field])
+    return texts
 
 
 def main():
     data = open_json('newsafr.json')
-    words = get_words(data)
-    top = Counter(words).most_common(10)
-    for word, count in top:
-        print(f'{word} - {count}')
+    items = get_items_from_data(data)
+    texts = get_texts_from_items(items, 'description')
+    words = get_words_from_texts(texts)
+    count_top(words, 10)
 
 
 main()
-

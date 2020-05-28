@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
-from collections import Counter
-from pprint import pprint
+from words_funcs import *
 
 
 def get_tree_from_xml(file):
@@ -22,27 +21,12 @@ def get_texts_from_items(items, field):
     return texts
 
 
-def get_words_from_texts(texts):
-    words = []
-    for text in texts:
-        text = text.split()
-        for word in text:
-            if len(word) > 6:
-                words.append(word)
-    return words
-
-
 def main():
     tree = get_tree_from_xml('newsafr.xml')
     items = get_items_from_tree(tree, 'channel/item')
     texts = get_texts_from_items(items, 'description')
     words = get_words_from_texts(texts)
-    top = Counter(words).most_common(10)
-    for word, count in top:
-        print(f'{word} - {count}')
+    count_top(words, 10)
 
 
 main()
-
-
-
