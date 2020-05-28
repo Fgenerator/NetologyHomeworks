@@ -3,8 +3,10 @@ import requests
 
 API_KEY = 'trnsl.1.1.20190712T081241Z.0309348472c8719d.0efdbc7ba1c507292080e3fbffe4427f7ce9a9f0'
 URL = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
+OAUTH_TOKEN = 'AgAAAAAhxVAnAADLW7Q3JOTezU3ekwEAlWWdDr4'
 
-def translate_it(text, to_lang):
+
+def translate_it(input_file, output_file, lang, to_lang='ru'):
     """
     https://translate.yandex.net/api/v1.5/tr.json/translate ?
     key=<API-ключ>
@@ -17,18 +19,30 @@ def translate_it(text, to_lang):
     :return:
     """
 
+    with open(input_file, encoding='utf8') as ifile:
+        text = ''
+        for line in ifile:
+            text = text + line
+
     params = {
         'key': API_KEY,
         'text': text,
-        'lang': 'ru-{}'.format(to_lang),
+        'lang': f'{lang}-{to_lang}',
     }
 
     response = requests.get(URL, params=params)
     json_ = response.json()
-    return ''.join(json_['text'])
+
+    with open(output_file, 'w', encoding='utf8') as ofile:
+        ofile.write(''.join(json_['text']))
 
 
-# print(translate_it('В настоящее время доступна единственная опция — признак включения в ответ автоматически определенного языка переводимого текста. Этому соответствует значение 1 этого параметра.', 'no'))
+def upload_to_yadisk(filename):
+    ...
+
 
 if __name__ == '__main__':
-    print(translate_it('привет', 'en'))
+    translate_it('DE.txt', 'Translated DE-RU.txt', 'de')
+    translate_it('ES.txt', 'Translated ES-RU.txt', 'es')
+    translate_it('FR.txt', 'Translated FR-RU.txt', 'fr')
+    translate_it('DE.txt', 'Translated DE-EN.txt', 'de', 'en')
