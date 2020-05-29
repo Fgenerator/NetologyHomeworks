@@ -59,10 +59,9 @@ def upload_to_yadisk(filename):
 
     upload_url = ''
 
+    response = requests.get(REQUEST_URL, params=request_params, headers=auth_headers)
+    json_ = response.json()
     try:
-        response = requests.get(REQUEST_URL, params=request_params, headers=auth_headers)
-        json_ = response.json()
-
         upload_url = json_['href']
     except KeyError:
         print('Something wrong with upload URL request.')
