@@ -4,7 +4,7 @@ import requests
 API_KEY = 'trnsl.1.1.20190712T081241Z.0309348472c8719d.0efdbc7ba1c507292080e3fbffe4427f7ce9a9f0'
 URL = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
 REQUEST_URL = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
-OAUTH_TOKEN = 'OAuth AgAAAAAhxVAnAADLW7Q3JOTezU3ekwEAlWWdDr4'
+OAUTH_TOKEN = 'OAuth '
 
 
 def translate_it(input_file, output_file, lang, to_lang='ru'):
@@ -36,6 +36,7 @@ def translate_it(input_file, output_file, lang, to_lang='ru'):
 
     with open(output_file, 'w', encoding='utf8') as ofile:
         ofile.write(''.join(json_['text']))
+    print(f'File {output_file} created.')
 
 
 def upload_to_yadisk(filename):
@@ -89,4 +90,5 @@ if __name__ == '__main__':
     upload_to_yadisk('Translated ES-RU.txt')
     upload_to_yadisk('Translated FR-RU.txt')
     upload_to_yadisk('Translated DE-EN.txt')
+
 
