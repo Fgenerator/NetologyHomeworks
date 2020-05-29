@@ -4,7 +4,7 @@ import requests
 API_KEY = 'trnsl.1.1.20190712T081241Z.0309348472c8719d.0efdbc7ba1c507292080e3fbffe4427f7ce9a9f0'
 URL = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
 REQUEST_URL = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
-OAUTH_TOKEN = 'OAuth '
+OAUTH_TOKEN = 'OAuth AgAAAAAhxVAnAADLW4zy8I53QEotorCp-pLVHVU'
 
 
 def translate_it(input_file, output_file, lang, to_lang='ru'):
@@ -21,7 +21,6 @@ def translate_it(input_file, output_file, lang, to_lang='ru'):
     :param lang:
     :param to_lang:
     """
-
     with open(input_file, encoding='utf8') as ifile:
         text = ifile.read()
 
@@ -52,15 +51,12 @@ def upload_to_yadisk(filename):
         'Authorization': OAUTH_TOKEN
     }
 
-    #auth_response = requests.get(AUTH_URL, headers=auth_headers)
-    #auth_json = auth_response.json()
-    #print(auth_json)
-
     request_params = {
         'path': filename,
         'overwrite': 'true',
         'fields': ''
     }
+
     upload_url = ''
 
     try:
@@ -78,6 +74,8 @@ def upload_to_yadisk(filename):
     else:
         if upload_response.status_code == 201:
             print(f'File {filename} successfully uploaded to Yandex.Disk.')
+        else:
+            print('Something wrong with uploading.')
 
 
 if __name__ == '__main__':
@@ -90,5 +88,3 @@ if __name__ == '__main__':
     upload_to_yadisk('Translated ES-RU.txt')
     upload_to_yadisk('Translated FR-RU.txt')
     upload_to_yadisk('Translated DE-EN.txt')
-
-
