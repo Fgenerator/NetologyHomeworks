@@ -4,7 +4,7 @@ import requests
 API_KEY = 'trnsl.1.1.20190712T081241Z.0309348472c8719d.0efdbc7ba1c507292080e3fbffe4427f7ce9a9f0'
 URL = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
 REQUEST_URL = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
-OAUTH_TOKEN = 'OAuth AgAAAAAhxVAnAADLW4zy8I53QEotorCp-pLVHVU'
+OAUTH_TOKEN = 'OAuth '
 
 
 def translate_it(input_file, output_file, lang, to_lang='ru'):
