@@ -79,7 +79,6 @@ def upload_to_yadisk(filename):
             print(f'File {filename} successfully uploaded to Yandex.Disk.')
 
 
-
 if __name__ == '__main__':
     translate_it('DE.txt', 'Translated DE-RU.txt', 'de')
     translate_it('ES.txt', 'Translated ES-RU.txt', 'es')
