@@ -1,6 +1,8 @@
 from pprint import pprint
 from urllib.parse import urlencode
 import requests
+from typing import List
+from typing import Dict
 
 OAUTH_URL = 'https://oauth.vk.com/authorize'
 OAUTH_PARAMs = {
@@ -17,7 +19,7 @@ class User:
     def __init__(self, id: str) -> None:
         self.id = id
 
-    def __and__(self, other) -> list:
+    def __and__(self, other) -> List[str]:
         friends_one = set(self.get_friends_ids())
         friends_two = set(other.get_friends_ids())
         mutual = friends_one & friends_two
@@ -26,10 +28,10 @@ class User:
             users.append(User(friend))
         return users
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'vk.com/id{self.id}'
 
-    def get_params(self):
+    def get_params(self) -> Dict:
         return {
             'access_token': TOKEN,
             'user_id': self.id,
@@ -53,7 +55,7 @@ class User:
         )
         return response.json()['response']['text']
 
-    def get_friends_ids(self) -> list:
+    def get_friends_ids(self) -> List[int]:
         params = self.get_params()
         response = requests.get(
             'https://api.vk.com/method/friends.get',
@@ -61,7 +63,7 @@ class User:
         )
         return response.json()['response']['items']
 
-    def get_friends_info(self) -> list:
+    def get_friends_info(self) -> List[str]:
         params = self.get_params()
         params['user_ids'] = str(self.get_friends_ids())
         response = requests.get(
