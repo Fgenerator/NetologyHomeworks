@@ -8,6 +8,27 @@ from typing import Dict
 
 TOKEN = '958eb5d439726565e9333aa30e50e0f937ee432e927f0dbd541c541887d919a7c56f95c04217915c32008'
 
+
+class Timer:
+    def __init__(self):
+        self.working_time = 0
+
+    def __enter__(self):
+        self.begin = time.monotonic()
+        print(f'{self.begin}: начало работы.\n')
+
+    def calculate_time(self):
+        self.working_time = self.end - self.begin
+        return self.working_time
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            print(f'error: {exc_val}')
+        self.end = time.monotonic()
+        print(f'{self.end}: конец работы.')
+        print(f'{self.calculate_time()}: общее время работы.')
+
+
 class User:
     def __init__(self, id: str) -> None:
         self.id = id
@@ -76,9 +97,9 @@ class User:
         )
         groups = []
         try:
-            print(response.json()['response']['items'])
+            #print(response.json()['response']['items'])
             for group in response.json()['response']['items']:
-                groups.extend(group['id'])
+                groups.append(group['id'])
             return groups
         except KeyError as e:
             id = response.json()['error']['request_params'][0]['value']
@@ -89,35 +110,48 @@ class User:
         friends = self.get_friends_ids()
         groups = []
         count = 0
+        begin = time.monotonic()
         for friend in friends:
             count += 1
-            if count > 2:
-                time.sleep(0.5)
+            if count > 2:  # and end - begin >= 1:
+                time.sleep(1)
                 count = 0
-            groups.extend(User(friend).get_groups())
+                #begin = time.monotonic()
+            try:
+                groups.extend(User(friend).get_groups())
+            except TypeError:
+                ...
+            #end = time.monotonic()
         return groups
+
+
 """
 Получить список групп пользователя
 Получить список друзей
 Получить списки групп друзей
 
 """
+
+
 def main():
-    user = User('11433647')
-    user2 = User('174467064')
-    # print(user.get_friends_ids())
-    # print(user2.get_friends_ids())
+    with Timer() as timer:
+        user = User('11433647')
+        user2 = User('174467064')
+        user3 = User('171691064')
+        # print(user.get_friends_ids())
+        # print(user2.get_friends_ids())
 
-    user_groups = user.get_groups()
-    print(set(user_groups))
-
-    user_friends_groups = user.get_friends_groups()
-    print(set(user_friends_groups))
+        user_groups = user3.get_groups()
 
 
+        user3_friends_groups = user3.get_friends_groups()
+        # print(set(user_friends_groups))
 
-    #with open('groups.txt', 'w') as outfile:
-       #json.dump(user.get_friends_groups(), outfile)
+        print(user_groups)
+        print(set(user_groups) - set(user3_friends_groups))
+
+        #with open('groups.txt', 'w') as outfile:
+         #   json.dump(user3_friends_groups, outfile)
 
 
 main()
