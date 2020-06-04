@@ -124,6 +124,26 @@ class User:
             #end = time.monotonic()
         return groups
 
+    def get_unique_groups(self):
+        user_groups = self.get_groups()
+        friends_groups = self.get_friends_groups()
+        return list(set(user_groups) - set(friends_groups))
+
+    def get_group_info(self, data):
+        # groups = self.get_unique_groups()
+        groups = data
+        params = self.get_params()
+        result = []
+        for group in groups:
+            params['group_id'] = group
+            params['fields'] = 'members_count'
+            print('*')
+            response = requests.get(
+                'https://api.vk.com/method/groups.getById',
+                params
+            )
+            result.append(response.json()['response'][0])
+        return result
 
 """
 Получить список групп пользователя
@@ -138,20 +158,37 @@ def main():
         user = User('11433647')
         user2 = User('174467064')
         user3 = User('171691064')
-        # print(user.get_friends_ids())
-        # print(user2.get_friends_ids())
 
-        user_groups = user3.get_groups()
+        #result = user3.get_unique_groups()
+        #print(type(result))
+        #print(result)
 
+        #user3.get_group_info()
 
-        user3_friends_groups = user3.get_friends_groups()
-        # print(set(user_friends_groups))
+        with open('groups.txt', encoding='utf-8') as f:
+            data = json.load(f)
 
-        print(user_groups)
-        print(set(user_groups) - set(user3_friends_groups))
+        groups = user3.get_group_info(data)
+        result = []
+        for group in groups:
+            result.append({
+                'id': group['id'],
+                'name': group['name'],
+                'count': group['members_count']
+            })
+        print(result)
+
+        with open('result.txt', 'w', encoding='utf-8') as outfile:
+            json.dump(result, outfile)
+
+        #print(data)
+        #user_groups = user3.get_groups()
+        #friends_groups = data
+        #data = set(user_groups) - set(friends_groups)
+        #user3.get_group_info(list(data))
 
         #with open('groups.txt', 'w') as outfile:
-         #   json.dump(user3_friends_groups, outfile)
+            #json.dump(user3.get_unique_groups(), outfile)
 
 
 main()
