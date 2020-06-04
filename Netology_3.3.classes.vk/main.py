@@ -8,7 +8,7 @@ OAUTH_URL = 'https://oauth.vk.com/authorize'
 OAUTH_PARAMs = {
     'client_id': 7490544,
     'display': 'page',
-    'scope': '',
+    'scope': 'friends, group',
     'response_type': 'token',
     'v': 5.89
 }
