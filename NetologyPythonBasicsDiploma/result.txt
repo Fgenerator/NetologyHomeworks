@@ -1,1 +1,17 @@
-[{"id": 134709480, "name": "\u0411\u0440\u0435\u043d\u0434 \u043e\u0434\u0435\u0436\u0434\u044b | MEDICINE", "count": 4976}, {"id": 8564, "name": "Synthpop [Futurepop, Retrowave, Electropop]", "count": 29345}, {"id": 101522128, "name": "E:\\music\\leftfield", "count": 14062}]
+[
+    {
+        "id": 134709480,
+        "name": "Бренд одежды | MEDICINE",
+        "count": 4993
+    },
+    {
+        "id": 8564,
+        "name": "Synthpop [Futurepop, Retrowave, Electropop]",
+        "count": 29351
+    },
+    {
+        "id": 101522128,
+        "name": "E:\\music\\leftfield",
+        "count": 14069
+    }
+]
