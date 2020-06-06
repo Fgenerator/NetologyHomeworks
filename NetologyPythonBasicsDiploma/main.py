@@ -32,42 +32,15 @@ class Timer:
 class User:
     def __init__(self, id: str) -> None:
         self.id = id
-
-    def __and__(self, other):
-        friends_one = set(self.get_friends_ids())
-        friends_two = set(other.get_friends_ids())
-        mutual = friends_one & friends_two
-        users = []
-        for friend in mutual:
-            users.append(User(friend))
-        return users
-
-    def __str__(self) -> str:
-        return f'vk.com/id{self.id}'
+        #self.screen_name = screen_name
 
     def get_params(self) -> Dict:
         return {
             'access_token': TOKEN,
             'user_id': self.id,
+            #'screen_name' = self.screen_name,
             'v': 5.89
         }
-
-    def set_status(self, text: str) -> str:
-        params = self.get_params()
-        params['text'] = text
-        response = requests.get(
-            'https://api.vk.com/method/status.set',
-            params
-        )
-        return response.json()['response']
-
-    def get_status(self) -> str:
-        params = self.get_params()
-        response = requests.get(
-            'https://api.vk.com/method/status.get',
-            params
-        )
-        return response.json()['response']['text']
 
     def get_friends_ids(self) -> List[int]:
         params = self.get_params()
@@ -77,15 +50,6 @@ class User:
         )
         print('+')
         return response.json()['response']['items']
-
-    def get_friends_info(self) -> List[str]:
-        params = self.get_params()
-        params['user_ids'] = str(self.get_friends_ids())
-        response = requests.get(
-            'https://api.vk.com/method/users.get',
-            params
-        )
-        return response.json()['response']
 
     def get_groups(self) -> Dict:
         params = self.get_params()
@@ -97,7 +61,6 @@ class User:
         )
         groups = []
         try:
-            #print(response.json()['response']['items'])
             for group in response.json()['response']['items']:
                 groups.append(group['id'])
             return groups
@@ -110,7 +73,7 @@ class User:
         friends = self.get_friends_ids()
         groups = []
         count = 0
-        begin = time.monotonic()
+        #begin = time.monotonic()
         for friend in friends:
             count += 1
             if count > 2:  # and end - begin >= 1:
@@ -129,12 +92,19 @@ class User:
         friends_groups = self.get_friends_groups()
         return list(set(user_groups) - set(friends_groups))
 
-    def get_group_info(self, data):
-        # groups = self.get_unique_groups()
-        groups = data
+    def get_group_info(self, data=None):
+        if data:
+            groups = data
+        else:
+            groups = self.get_unique_groups()
         params = self.get_params()
         result = []
+        count = 0
         for group in groups:
+            count += 1
+            if count > 2:
+                time.sleep(1)
+                count = 0
             params['group_id'] = group
             params['fields'] = 'members_count'
             print('*')
@@ -145,6 +115,7 @@ class User:
             result.append(response.json()['response'][0])
         return result
 
+
 """
 Получить список групп пользователя
 Получить список друзей
@@ -153,42 +124,44 @@ class User:
 """
 
 
+def get_data_and_save(filename: str, user: User):
+    with open('groups.txt', 'w') as outfile:
+        json.dump(user.get_unique_groups(), outfile)
+
+
+def load_data_from_file(filename: str):
+    with open(filename, encoding='utf-8') as f:
+        return json.load(f)
+
+
+def get_result(user, data=None):
+    if data:
+        groups = user.get_group_info(data)
+    else:
+        groups = user.get_group_info()
+    result = []
+    for group in groups:
+        result.append({
+            'id': group['id'],
+            'name': group['name'],
+            'count': group['members_count']
+        })
+    print(result)
+
+    with open('result.txt', 'w', encoding='utf-8') as outfile:
+        json.dump(result, outfile, ensure_ascii=False, indent=4)
+
+
 def main():
     with Timer() as timer:
-        user = User('11433647')
-        user2 = User('174467064')
-        user3 = User('171691064')
+        user = User('171691064')
 
-        #result = user3.get_unique_groups()
-        #print(type(result))
-        #print(result)
+        #get_data_and_save('groups.txt', user)
 
-        #user3.get_group_info()
+        #data = load_data_from_file('groups.txt')
 
-        with open('groups.txt', encoding='utf-8') as f:
-            data = json.load(f)
-
-        groups = user3.get_group_info(data)
-        result = []
-        for group in groups:
-            result.append({
-                'id': group['id'],
-                'name': group['name'],
-                'count': group['members_count']
-            })
-        print(result)
-
-        with open('result.txt', 'w', encoding='utf-8') as outfile:
-            json.dump(result, outfile)
-
-        #print(data)
-        #user_groups = user3.get_groups()
-        #friends_groups = data
-        #data = set(user_groups) - set(friends_groups)
-        #user3.get_group_info(list(data))
-
-        #with open('groups.txt', 'w') as outfile:
-            #json.dump(user3.get_unique_groups(), outfile)
+        #get_result(user, data)
+        get_result(user)
 
 
 main()
