@@ -30,31 +30,41 @@ class Timer:
 
 
 class User:
-    def __init__(self, id: str) -> None:
-        self.id = id
-        #self.screen_name = screen_name
+    def __init__(self, call: str) -> None:
+        if call.isdigit():
+            self.id = call
+        else:
+            params ={
+                'access_token': TOKEN,
+                'v': 5.89,
+                'user_ids': call
+            }
+            response = requests.get(
+                'https://api.vk.com/method/users.get',
+                params
+            )
+            self.id = response.json()['response'][0]['id']
 
     def get_params(self) -> Dict:
         return {
             'access_token': TOKEN,
             'user_id': self.id,
-            #'screen_name' = self.screen_name,
             'v': 5.89
         }
 
     def get_friends_ids(self) -> List[int]:
         params = self.get_params()
+        print('Friends request')
         response = requests.get(
             'https://api.vk.com/method/friends.get',
             params
         )
-        print('+')
         return response.json()['response']['items']
 
     def get_groups(self) -> Dict:
         params = self.get_params()
         params['extended'] = 1
-        print('*')
+        print('Groups request')
         response = requests.get(
             'https://api.vk.com/method/groups.get',
             params
@@ -72,19 +82,13 @@ class User:
     def get_friends_groups(self):
         friends = self.get_friends_ids()
         groups = []
-        count = 0
-        #begin = time.monotonic()
-        for friend in friends:
-            count += 1
-            if count > 2:  # and end - begin >= 1:
+        for i, friend in enumerate(friends):
+            if i % 3 == 0:
                 time.sleep(1)
-                count = 0
-                #begin = time.monotonic()
             try:
-                groups.extend(User(friend).get_groups())
+                groups.extend(User(str(friend)).get_groups())
             except TypeError:
                 ...
-            #end = time.monotonic()
         return groups
 
     def get_unique_groups(self):
@@ -99,15 +103,12 @@ class User:
             groups = self.get_unique_groups()
         params = self.get_params()
         result = []
-        count = 0
-        for group in groups:
-            count += 1
-            if count > 2:
+        for i, group in enumerate(groups):
+            if i % 3 == 0:
                 time.sleep(1)
-                count = 0
             params['group_id'] = group
             params['fields'] = 'members_count'
-            print('*')
+            print('Groups info request')
             response = requests.get(
                 'https://api.vk.com/method/groups.getById',
                 params
@@ -116,16 +117,8 @@ class User:
         return result
 
 
-"""
-Получить список групп пользователя
-Получить список друзей
-Получить списки групп друзей
-
-"""
-
-
 def get_data_and_save(filename: str, user: User):
-    with open('groups.txt', 'w') as outfile:
+    with open(filename, 'w') as outfile:
         json.dump(user.get_unique_groups(), outfile)
 
 
@@ -135,17 +128,12 @@ def load_data_from_file(filename: str):
 
 
 def get_result(user, data=None):
-    if data:
-        groups = user.get_group_info(data)
-    else:
-        groups = user.get_group_info()
-    result = []
-    for group in groups:
-        result.append({
+    groups = user.get_group_info(data)
+    result = [{
             'id': group['id'],
             'name': group['name'],
             'count': group['members_count']
-        })
+        } for group in groups]
     print(result)
 
     with open('result.txt', 'w', encoding='utf-8') as outfile:
@@ -154,13 +142,15 @@ def get_result(user, data=None):
 
 def main():
     with Timer() as timer:
-        user = User('171691064')
+        # user = User('171691064')
+        user = User('eshmargunov')
 
-        #get_data_and_save('groups.txt', user)
+        # get_data_and_save('groups.txt', user)
 
-        #data = load_data_from_file('groups.txt')
+        # data = load_data_from_file('groups.txt')
 
-        #get_result(user, data)
+        # get_result(user, data)
+
         get_result(user)
 
 
