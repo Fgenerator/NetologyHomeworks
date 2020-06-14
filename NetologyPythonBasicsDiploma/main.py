@@ -1,3 +1,4 @@
+import sys
 from pprint import pprint
 from urllib.parse import urlencode
 import requests
@@ -48,8 +49,8 @@ class User:
                 print('Something wrong with user id request')
             try:
                 self.id = response.json()['response'][0]['id']
-            except KeyError as e:
-                print('Bad response with user ID')
+            except Exception as e:
+                sys.exit('Bad response with user ID')
 
     def get_params(self) -> Dict:
         try:
