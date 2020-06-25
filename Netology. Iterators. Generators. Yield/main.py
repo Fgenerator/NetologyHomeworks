@@ -22,22 +22,17 @@ def get_country_list(data: any) -> List:
 
 class CountryIterator:
     def __init__(self, country_list):
-        self.countries = country_list
-        self.begin = 0
-        self.end = len(country_list)
-        self.current = self.begin
+        self.countries_iterator = iter(country_list)
         self.session = requests.Session()
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.current == self.end - 1:
-            raise StopIteration
-        self.current += 1
-        self.id = self.get_page_id(self.countries[self.current])
-        self.url = self.get_page_url(self.id)
-        return f'{self.countries[self.current]} -- {self.url}'
+        country = next(self.countries_iterator)
+        id = self.get_page_id(country)
+        url = self.get_page_url(id)
+        return f'{country} -- {url}'
 
     def get_page_id(self, country):
         params = PARAMS
