@@ -32,7 +32,7 @@ class CountryIterator:
         country = next(self.countries_iterator)
         id = self.get_page_id(country)
         url = self.get_page_url(id)
-        return f'{country} -- {url}'
+        return country, url
 
     def get_page_id(self, country):
         params = PARAMS
@@ -68,9 +68,9 @@ class CountryIterator:
 
 def perform_file(country_list, filename):
     with open(filename, 'w', encoding='utf8') as ofile:
-        for i, country_url in enumerate(CountryIterator(country_list)):
-            ofile.write(country_url + '\n')
-            print(f'{i+1}, {country_url} added in file')
+        for country, url in CountryIterator(country_list):
+            ofile.write(f'{country} -- {url}\n')
+            print(f'{country} with url: {url} added to file')
 
 
 def hash_from_file_generator(filename):
