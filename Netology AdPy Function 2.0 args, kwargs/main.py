@@ -150,6 +150,7 @@ def main():
 
     adv_print('test', 'kek', start='***', max_line=5, in_file=True)
 
+
 if __name__ == '__main__':
     main()
 
