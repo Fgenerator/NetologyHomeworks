@@ -66,6 +66,7 @@ class CountryIterator:
         except Exception:
             print('Wrong page url response')
 
+
 def param_decor(log_path):
     def decorator(old_function):
         def new_function(*args, **kwargs):
@@ -78,6 +79,7 @@ def param_decor(log_path):
             return result
         return new_function
     return decorator
+
 
 @param_decor('log.txt')
 def perform_file(country_list, filename):
