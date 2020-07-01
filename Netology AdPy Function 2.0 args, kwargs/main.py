@@ -1,3 +1,5 @@
+import textwrap
+
 class Contact:
     def __init__(self,
                  first_name: str, second_name: str, phone: str,
@@ -86,10 +88,33 @@ class PhoneBook:
             print(f'{first_name} {second_name} not in phonebook {self.name}\n')
 
 
-def adv_print(*args, start='', **kwargs):  # max_line
+def prepare_lines(string, max_line):
+    list = textwrap.wrap(string, max_line)
     result = ''
-    start += result
+    for string in list:
+        result += string + '\n'
     return result
+
+
+def adv_print(*args, **kwargs):
+    if kwargs['start']:
+        result = kwargs['start']
+    else:
+        result = ''
+
+    if kwargs['max_line'] >= 0:
+        max_line = kwargs['max_line']
+
+    args = (str(arg) for arg in args)
+    for line in args:
+        result += line
+    if max_line > 0:
+        result = prepare_lines(result, max_line)
+
+    if kwargs['in_file']:
+        with open('result.txt', 'w', encoding='utf8') as rfile:
+            rfile.write(result)
+    print(result)
 
 # *3. Продвинутый print (необязательное задание)
 # Разработать свою реализацию функции print - adv_print. Она ничем не должна отличаться от классической функции кроме трех новых необязательных аргументов:
@@ -123,6 +148,8 @@ def main():
     book.search_by_name('Bob', 'Dilan')
     book.search_by_name('John', 'Smith')
 
+    adv_print('test', 'kek', start='***', max_line=5, in_file=True)
 
 if __name__ == '__main__':
     main()
+
