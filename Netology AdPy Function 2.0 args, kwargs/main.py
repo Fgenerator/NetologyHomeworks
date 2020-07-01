@@ -96,14 +96,8 @@ def prepare_lines(string, max_line):
     return result
 
 
-def adv_print(*args, **kwargs):
-    if kwargs['start']:
-        result = kwargs['start']
-    else:
-        result = ''
-
-    if kwargs['max_line'] >= 0:
-        max_line = kwargs['max_line']
+def adv_print(*args, start='', max_line=0, in_file=False, **kwargs):
+    result = start
 
     args = (str(arg) for arg in args)
     for line in args:
@@ -111,7 +105,7 @@ def adv_print(*args, **kwargs):
     if max_line > 0:
         result = prepare_lines(result, max_line)
 
-    if kwargs['in_file']:
+    if in_file:
         with open('result.txt', 'w', encoding='utf8') as rfile:
             rfile.write(result)
     print(result)
@@ -149,6 +143,7 @@ def main():
     book.search_by_name('John', 'Smith')
 
     adv_print('test', 'kek', start='***', max_line=5, in_file=True)
+    adv_print('test', 'kek', '1234567890')
 
 
 if __name__ == '__main__':
