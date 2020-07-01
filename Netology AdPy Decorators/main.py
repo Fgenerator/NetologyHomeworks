@@ -70,12 +70,10 @@ class CountryIterator:
 def param_decor(log_path):
     def decorator(old_function):
         def new_function(*args, **kwargs):
+            result = old_function(*args, **kwargs)
             with open(log_path, 'w', encoding='utf8') as log_file:
                 now = datetime.datetime.now()
-                log_file.write(f'{now}: \'{old_function.__name__}\' function \nwith args: {args} \nand kwargs: {kwargs}\n')
-            result = old_function(*args, **kwargs)
-            with open(log_path, 'a', encoding='utf8') as log_file:
-                log_file.write(f'Result: {result}')
+                log_file.write(f'{now}: \'{old_function.__name__}\' function\nwith args: {args}\nand kwargs: {kwargs}\nResult: {result}')
             return result
         return new_function
     return decorator
