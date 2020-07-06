@@ -1,6 +1,7 @@
 import unittest
 import app
 from unittest.mock import patch
+import io
 
 
 class TestSecretary(unittest.TestCase):
@@ -9,6 +10,10 @@ class TestSecretary(unittest.TestCase):
         # with patch('app.update_date', return_value=(self.documents, self.directories)):
         with patch('app.input', return_value='q'):
             app.secretary_program_start()
+
+    def test_update_date(self):
+        self.assertTrue(app.documents)
+        self.assertTrue(app.directories)
 
     def test_negative_check_document_existance(self):
         self.assertNotIn('555', [doc['number'] for doc in app.documents])
@@ -87,7 +92,32 @@ class TestSecretary(unittest.TestCase):
         self.assertIn(result, app.directories.keys())
 
     def test_show_document_info(self):
-        with patch('app.print', )
+        doc = app.documents[0]
+        doc_type = doc['type']
+        doc_number = doc['number']
+        doc_owner = doc['name']
+
+        with patch('sys.stdout', new=io.StringIO()) as fake_stdout:
+            app.show_document_info(doc)
+        
+        assert fake_stdout.getvalue() == f'{doc_type} "{doc_number}" "{doc_owner}"\n'
+
+    def test_show_all_docs_info(self):
+        with patch('sys.stdout', new=io.StringIO()) as main_fake_stdout:
+            app.show_all_docs_info()
+
+        f_stdout = '\n'
+        for doc in app.documents:
+            doc_type = doc['type']
+            doc_number = doc['number']
+            doc_owner = doc['name']
+
+            with patch('sys.stdout', new=io.StringIO()) as fake_stdout:
+                app.show_document_info(doc)
+            f_stdout += fake_stdout.getvalue()
+            assert fake_stdout.getvalue() == f'{doc_type} "{doc_number}" "{doc_owner}"\n'
+
+        assert main_fake_stdout.getvalue() == 'Список всех документов:\n' + f_stdout
 
     # example
     def test_move_doc_to_shelf(self):
