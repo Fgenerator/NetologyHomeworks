@@ -1,6 +1,6 @@
 import unittest
 import app
-from unittest.mock import patch
+from unittest.mock import patch, call
 import io
 
 
@@ -90,6 +90,19 @@ class TestSecretary(unittest.TestCase):
         with patch('app.input', return_value=doc_number):
             result = app.get_doc_shelf()
         self.assertIn(result, app.directories.keys())
+
+    @patch('builtins.print')
+    def test_show_document_info2(self):
+        doc = app.documents[0]
+        doc_type = doc['type']
+        doc_number = doc['number']
+        doc_owner = doc['name']
+
+        with patch('sys.stdout', new=io.StringIO()) as fake_stdout:
+            app.show_document_info(doc)
+
+        assert fake_stdout.getvalue() == f'{doc_type} "{doc_number}" "{doc_owner}"\n'
+
 
     def test_show_document_info(self):
         doc = app.documents[0]
