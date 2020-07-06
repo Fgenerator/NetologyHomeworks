@@ -9,9 +9,9 @@ def update_date():
     current_path = str(os.path.dirname(os.path.abspath(__file__)))
     f_directories = os.path.join(current_path, 'fixtures/directories.json')
     f_documents = os.path.join(current_path, 'fixtures/documents.json')
-    with open(f_documents, 'r') as out_docs:
+    with open(f_documents, 'r', encoding='utf8') as out_docs:
         documents = json.load(out_docs)
-    with open(f_directories, 'r') as out_dirs:
+    with open(f_directories, 'r', encoding='utf8') as out_dirs:
         directories = json.load(out_dirs)
     return directories, documents
 
