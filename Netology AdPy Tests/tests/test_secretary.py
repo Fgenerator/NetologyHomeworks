@@ -114,9 +114,17 @@ class TestSecretary(unittest.TestCase):
 
         assert fake_stdout.getvalue() == f'{doc_type} "{doc_number}" "{doc_owner}"\n'
 
-    '''@patch('builtins.print')
     @patch('app.show_document_info')
-    def test_show_all_docs_info2(self, mocked_print, mocked_show_document_info):
+    def test_show_all_docs_info_3(self, mocked_show_document_info):
+
+        app.show_all_docs_info()
+
+        mocked_show_document_info.called
+        calls = mocked_show_document_info.call_count
+        self.assertEqual(calls, len(app.documents))
+
+    @patch('builtins.print')
+    def test_show_all_docs_info_2(self, mocked_print):
         calls = [call('Список всех документов:\n')]
 
         for doc in app.documents:
@@ -126,11 +134,10 @@ class TestSecretary(unittest.TestCase):
             calls.append(call(f'{doc_type} "{doc_number}" "{doc_owner}"'))
 
         app.show_all_docs_info()
-        # mocked_show_document_info.called
         mocked_print.assert_has_calls(calls)
 
         # for string in prints:
-        #   assert mocked_print.mock_calls[prints.index(string)] == call(string)'''
+        #   assert mocked_print.mock_calls[prints.index(string)] == call(string)
 
     def test_show_all_docs_info(self):
         with patch('sys.stdout', new=io.StringIO()) as main_fake_stdout:
