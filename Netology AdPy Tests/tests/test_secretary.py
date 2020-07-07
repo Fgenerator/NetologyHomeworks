@@ -111,7 +111,7 @@ class TestSecretary(unittest.TestCase):
 
         with patch('sys.stdout', new=io.StringIO()) as fake_stdout:
             app.show_document_info(doc)
-        
+
         assert fake_stdout.getvalue() == f'{doc_type} "{doc_number}" "{doc_owner}"\n'
 
     '''@patch('builtins.print')
