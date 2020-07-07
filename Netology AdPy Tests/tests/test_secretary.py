@@ -92,17 +92,16 @@ class TestSecretary(unittest.TestCase):
         self.assertIn(result, app.directories.keys())
 
     @patch('builtins.print')
-    def test_show_document_info2(self):
+    def test_show_document_info2(self, mocked_print):
         doc = app.documents[0]
         doc_type = doc['type']
         doc_number = doc['number']
         doc_owner = doc['name']
 
-        with patch('sys.stdout', new=io.StringIO()) as fake_stdout:
-            app.show_document_info(doc)
+        app.show_document_info(doc)
+        mocked_print.assert_called_once_with(f'{doc_type} "{doc_number}" "{doc_owner}"')
 
-        assert fake_stdout.getvalue() == f'{doc_type} "{doc_number}" "{doc_owner}"\n'
-
+        # assert mocked_print.mock_calls[0] == call(f'{doc_type} "{doc_number}" "{doc_owner}"')
 
     def test_show_document_info(self):
         doc = app.documents[0]
@@ -114,6 +113,24 @@ class TestSecretary(unittest.TestCase):
             app.show_document_info(doc)
         
         assert fake_stdout.getvalue() == f'{doc_type} "{doc_number}" "{doc_owner}"\n'
+
+    '''@patch('builtins.print')
+    @patch('app.show_document_info')
+    def test_show_all_docs_info2(self, mocked_print, mocked_show_document_info):
+        calls = [call('Список всех документов:\n')]
+
+        for doc in app.documents:
+            doc_type = doc['type']
+            doc_number = doc['number']
+            doc_owner = doc['name']
+            calls.append(call(f'{doc_type} "{doc_number}" "{doc_owner}"'))
+
+        app.show_all_docs_info()
+        # mocked_show_document_info.called
+        mocked_print.assert_has_calls(calls)
+
+        # for string in prints:
+        #   assert mocked_print.mock_calls[prints.index(string)] == call(string)'''
 
     def test_show_all_docs_info(self):
         with patch('sys.stdout', new=io.StringIO()) as main_fake_stdout:
