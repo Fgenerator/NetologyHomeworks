@@ -41,20 +41,20 @@ class TestSecretary(unittest.TestCase):
         for name in result:
             self.assertIn(name, self.get_docs_owners())
 
-    def get_docs_numbers_from_shells(self):
+    def get_docs_numbers_from_shelves(self):
         docs = []
-        for shell in app.directories.values():
-            for doc in shell:
+        for shelf in app.directories.values():
+            for doc in shelf:
                 docs.append(doc)
         return docs
 
     def test_remove_doc_from_shelf(self):
         doc_number = '10006'
-        docs = self.get_docs_numbers_from_shells()
+        docs = self.get_docs_numbers_from_shelves()
 
         self.assertIn(doc_number, docs)
         app.remove_doc_from_shelf(doc_number)
-        docs = self.get_docs_numbers_from_shells()
+        docs = self.get_docs_numbers_from_shelves()
 
         self.assertNotIn(doc_number, docs)
 
@@ -77,7 +77,7 @@ class TestSecretary(unittest.TestCase):
         shelf_number = '3'
         app.append_doc_to_shelf(doc_number, shelf_number)
         self.assertIn(shelf_number, app.directories.keys())
-        self.assertIn(doc_number, self.get_docs_numbers_from_shells())
+        self.assertIn(doc_number, self.get_docs_numbers_from_shelves())
 
     def test_delete_doc(self):
         doc_number = '10006'
