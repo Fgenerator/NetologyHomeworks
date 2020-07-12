@@ -1,5 +1,4 @@
 from pprint import pprint
-# читаем адресную книгу в формате CSV в список contacts_list
 import csv
 import re
 
@@ -14,7 +13,6 @@ def get_contacts(filename):
 def upload_contacts(contacts, filename):
     with open(filename, "w", encoding='utf8') as f:
         datawriter = csv.writer(f, delimiter=',')
-        # Вместо contacts_list подставьте свой список
         datawriter.writerows(contacts)
 
 
@@ -31,12 +29,13 @@ def shake_names(contacts):
                 contact[buffer.index(part) + 1] = part
 
 
-def convert_phone(contacts):
+def convert_phones(contacts):
     for contact in contacts:
+        pattern = re.compile(r'(\+7|8)\s?\(?(\d+)\)?\s?\-?(\d{3})\-?(\d{2})\-?(\d{2})')
+        contact[5] = pattern.sub(r'+7(\2)-\3-\5', contact[5])
 
-        pattern = re.compile(r"(\+7|8)?\s*\((\d+)\)\s*(\d+)(\s*|\-?)(\d+)(\s*|\-?)(\d+)")
-        text2 = pattern.sub(r"+7(\2)-\3-\5-\7", contact[5])
-        print(text2)
+        pattern = re.compile(r'(\(?)([д][о][б]\.?)\s?(\d+)(\)?)')
+        contact[5] = pattern.sub(r'\2\3', contact[5])
 
 
 def merge_duplicates(contacts):
@@ -65,10 +64,9 @@ def main():
     contacts_list = get_contacts("phonebook_raw.csv")
     shake_names(contacts_list)
     merge_duplicates(contacts_list)
+    convert_phones(contacts_list)
     pprint(contacts_list)
-    convert_phone(contacts_list)
     upload_contacts(contacts_list, "phonebook.csv")
-
 
 
 if __name__ == '__main__':
