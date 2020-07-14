@@ -44,7 +44,7 @@ def get_students(cur, course_id):  # возвращает студентов о�
     cur.execute('''
         SELECT name FROM students
         JOIN student_course ON students.id = student_course.student_id
-        WHERE student_course.course_id = %s
+        WHERE student_course.course_id = %s;
         ''', (course_id,))
     print(cur.fetchall())
 
@@ -58,7 +58,7 @@ def add_students(cur, course_id, students):  # создает студентов
 
         cur.execute('''
             INSERT INTO student_course (student_id, course_id) VALUES
-            (%s, %s)
+            (%s, %s);
             ''', (student_id, course_id))
 
     cur.execute('''
@@ -86,7 +86,7 @@ def add_course(cur, course):
 def get_student(cur, student_id):
     cur.execute('''
         SELECT name FROM students
-        WHERE id = %s
+        WHERE id = %s;
         ''', (student_id,))
     print(cur.fetchall())
 
