@@ -50,26 +50,30 @@ def get_students(cur, course_id):  # возвращает студентов о�
 
 
 def add_students(cur, course_id, students):  # создает студентов и записывает их на курс
+    cur.execute('''
+        BEGIN;
+        ''')
     for student in students:
-        add_student(cur, student)
-
-        cur.execute('''
-            SELECT id FROM students
-            WHERE name = %s
-            ''', (student['name'],))
-        student_id = cur.fetchone()
+        student_id = add_student(cur, student)
 
         cur.execute('''
             INSERT INTO student_course (student_id, course_id) VALUES
             (%s, %s)
             ''', (student_id, course_id))
 
+    cur.execute('''
+        COMMIT;
+        ''')
+
 
 def add_student(cur, student):  # просто создает студента
     cur.execute('''
     INSERT INTO students (name, gpa, birth) VALUES
-    ( %s, %s, %s);
+    ( %s, %s, %s)
+    RETURNING id;
     ''', (student['name'], student['gpa'], student['birth']))
+
+    return cur.fetchone()[0]
 
 
 def add_course(cur, course):
