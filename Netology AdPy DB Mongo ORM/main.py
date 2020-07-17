@@ -1,6 +1,6 @@
 import csv
 import re
-
+from datetime import datetime
 from pymongo import MongoClient
 
 
@@ -20,11 +20,13 @@ def read_data(csv_file, db):
         artists_collection = db.artists
         artists = []
         for row in reader:
+            row['Дата'] = f'{row["Дата"]}.{datetime.now().year}'
+            date = datetime.strptime(row['Дата'], '%d.%m.%Y')
             artists.append({
                 'name': row['Исполнитель'],
                 'cost': row['Цена'],
                 'place': row['Место'],
-                'date': row['Дата']
+                'date': date
             })
         artists_collection.insert_many(artists)
 
@@ -49,12 +51,17 @@ def find_by_name(name, db):
     print(list(db.artists.find({'name': {'$regex': regex}}).sort([('cost', -1)])))
 
 
+def sort_by_date(db):
+    print(list(db.artists.find().sort([('date', 1)])))
+
+
 if __name__ == '__main__':
     netology_db = prepare_db()
     read_data('artists.csv', netology_db)
     print(list(netology_db.artists.find()))
     find_cheapest(netology_db)
     find_by_name('1', netology_db)
+    sort_by_date(netology_db)
 
     netology_db.artists.delete_many({})
 
