@@ -47,6 +47,7 @@ def find_by_name(name, db):
     """
     # 'укажите регулярное выражение для поиска. ' \
     # 'Обратите внимание, что в строке могут быть специальные символы, их нужно экранировать'
+    name = re.escape(name)
     regex = re.compile('/*'+name+'/*')
     print(list(db.artists.find({'name': {'$regex': regex}}).sort([('cost', -1)])))
 
@@ -60,6 +61,7 @@ if __name__ == '__main__':
     read_data('artists.csv', netology_db)
     print(list(netology_db.artists.find()))
     find_cheapest(netology_db)
+    find_by_name('[a-Z]*', netology_db)
     find_by_name('1', netology_db)
     sort_by_date(netology_db)
 
