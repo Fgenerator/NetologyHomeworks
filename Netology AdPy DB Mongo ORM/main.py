@@ -24,7 +24,7 @@ def read_data(csv_file, db):
             date = datetime.strptime(row['Дата'], '%d.%m.%Y')
             artists.append({
                 'name': row['Исполнитель'],
-                'cost': row['Цена'],
+                'cost': int(row['Цена']),
                 'place': row['Место'],
                 'date': date
             })
