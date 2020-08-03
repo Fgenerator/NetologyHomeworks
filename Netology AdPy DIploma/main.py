@@ -1,6 +1,14 @@
 from vkauth import VKAuth
 from users import User
 
+
+def prepare_users(users_from_vk, token):
+    internal_users = []
+    for vk_user in users_from_vk:
+        internal_users.append(User(str(vk_user['id']), token))
+    return internal_users
+
+
 vk_auth = VKAuth(['photos', 'friends'], '7556238', '5.89')
 
 vk_auth.auth()
@@ -10,7 +18,7 @@ user_id = vk_auth.get_user_id()
 
 user = User(user_id, access_token)
 
-print(user.get_params())
+print(prepare_users(user.search_users(20, 25, 1, 'Тюмень', 6), access_token))
 
 """
 
