@@ -3,21 +3,20 @@ from pymongo import MongoClient
 
 def prepare_db():
     client = MongoClient()
-    db = client['netology']
+    db = client['vk_users']
     return db
 
 
 def read_data(data, db):
-        for user in data:
-            row['Дата'] = f'{row["Дата"]}.{datetime.now().year}'
-            date = datetime.strptime(row['Дата'], '%d.%m.%Y')
-            artists.append({
-                'name': row['Исполнитель'],
-                'cost': int(row['Цена']),
-                'place': row['Место'],
-                'date': date
-            })
-        artists_collection.insert_many(artists)
+    vk_users_collection = db.users
+
+    vk_users_collection.insert_many(data)
+
+    db.vk_users_collection.ensureIndex({'page': 1}, {'unique': 'true', 'dropDups': 'true'})
+
+   # db.users.createIndex({'page'})
+
+    #db.users.createIndex({'page': 1}, unique: true)
 
 
 def find_cheapest(db):

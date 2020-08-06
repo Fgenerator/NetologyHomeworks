@@ -1,5 +1,6 @@
 from vkauth import VKAuth
 from users import User
+import db
 from pprint import pprint
 from operator import itemgetter
 import json
@@ -13,7 +14,7 @@ def prepare_users(users_from_vk, token):
         internal_user.closed = vk_user['is_closed']
         if not internal_user.closed:
             internal_users.append(internal_user)
-    #print('internal users prepared')
+    # print('internal users prepared')
     return internal_users
 
 
@@ -25,16 +26,16 @@ def prepare_photos(photos):
             'likes': photo['likes']['count'],
             'comments': photo['comments']['count']
         })
-    #print('internal photos prepared')
+    # print('internal photos prepared')
     return internal_photos
 
 
 def sort_photos(internal_photos):
-    #internal_photos = sorted(internal_photos, key=lambda k: (k['likes'], k['comments']))
-    #internal_photos = sorted(internal_photos, key=itemgetter('likes', 'comments'))
+    # internal_photos = sorted(internal_photos, key=lambda k: (k['likes'], k['comments']))
+    # internal_photos = sorted(internal_photos, key=itemgetter('likes', 'comments'))
     internal_photos.sort(key=itemgetter('likes', 'comments'))
     internal_photos.reverse()
-    #print('internal photos sorted')
+    # print('internal photos sorted')
     return internal_photos
 
 
@@ -75,7 +76,15 @@ data = prepare_data_to_json(users)
 
 write_data_to_json(data)
 
+vk_users_db = db.prepare_db()
 
+db.read_data(data, vk_users_db)
+
+pprint(list(vk_users_db.users.find()))
+
+pprint(len(list(vk_users_db.users.find())))
+
+# vk_users_db.users.delete_many({})
 
 """
 
@@ -88,7 +97,7 @@ write_data_to_json(data)
         - пол,
         - город,
         - семейное положение
-    
+
 Вывод в JSON
     JSON-файл с 10 объектами, где у каждого объекта перечислены топ-3 фотографии
     и ссылка на аккаунт.

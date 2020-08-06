@@ -7,13 +7,21 @@ from typing import List
 class User:
     def __init__(self, call: str, token: str) -> None:
         self.token = token
+        self.closed = None
+        self.photos = []
+        self.page = None
+        self.call = None
+        self.id = None
         if call.isdigit():
             self.id = call
+            self.page = f'vk.com/id{call}'
         else:
+            self.page = f'vk.com/{call}'
+            self.call = call
             params = {
                 'access_token': self.token,
                 'v': 5.89,
-                'user_ids': call
+                'user_ids': self.call
             }
             try:
                 response = requests.get(
@@ -79,7 +87,9 @@ class User:
         params['sex'] = sex
         params['city'] = self.get_city_id(city)
         params['status'] = status
+        params['has_photo'] = 1
         params['count'] = 100
+        params['fields'] = 'is_closed'
 
         try:
             response = requests.get(
@@ -92,3 +102,22 @@ class User:
             return response.json()['response']['items']
         except KeyError as e:
             print('Bad get users search response')
+
+    def get_photos(self):
+        params = self.get_params()
+        params['album_id'] = 'profile'
+        params['extended'] = 1
+        photos = []
+
+        try:
+            response = requests.get(
+                'https://api.vk.com/method/photos.get',
+                params
+            )
+        except Exception as e:
+            print('Something wrong with photos get request')
+        try:
+            return response.json()['response']['items']
+        except KeyError as e:
+            print('Bad get photos response')
+            return []
