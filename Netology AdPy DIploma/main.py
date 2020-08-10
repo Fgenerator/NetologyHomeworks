@@ -5,6 +5,7 @@ from pprint import pprint
 from operator import itemgetter
 import json
 import time
+import re
 
 
 def prepare_users(users_from_vk, token, db):
@@ -63,32 +64,55 @@ def write_data_to_json(data_to_write):
 def age_input():
     age_from, age_to = None, None
     while not age_from:
-        age_from = input('Введите нижнюю границу возраста для поиска (положительное число): ')
-        if age_from.isdigit() and int(age_from) > 0:
-            ...
-        else:
+        age_from = re.escape(input('Введите нижнюю границу возраста для поиска (положительное число): '))
+        if not (age_from.isdigit() and int(age_from) > 0):
             print('Некорректный возраст')
             age_from = None
     while not age_to:
-        age_to = input('Введите верхнюю границу возраста для поиска (положительное число, большее нижней '
-                       'границы поиска): ')
-        if age_to.isdigit() and int(age_to) > int(age_from):
-            ...
-        else:
+        age_to = re.escape(input('Введите верхнюю границу возраста для поиска (положительное число, '
+                                 'большее нижней границы поиска): '))
+        if not (age_to.isdigit() and int(age_to) > int(age_from)):
             print('Некорректный возраст')
             age_to = None
     return age_from, age_to
 
 
-def input_some_sex():
+def sex_input():
     sex = None
     while not sex:
-        sex = input('Введите пол (0 - любой, 1 - жен, 2 - муж): ')
-        if sex == '0' or sex == '1' or sex == '2':
+        sex = re.escape(input('Введите пол (0 - любой, 1 - жен, 2 - муж): '))
+        if sex.isdigit() and 0 <= int(sex) < 3:
             return sex
         else:
             print('Некорректный пол')
             sex = None
+
+
+
+def city_input():
+    city = None
+    while not city:
+        city = re.escape(input('Введите город поиска: '))
+        if city.isalnum():
+            return city
+        else:
+            print('Некорректный город')
+            city = None
+
+
+def status_input():
+    status = None
+    while not status:
+        print('Введите семейное положение.')
+        print('1 — не женат (не замужем);\n2 — встречается;\n3 — помолвлен(-а);\n4 — женат (замужем);\n'
+              '5 — всё сложно;\n6 — в активном поиске;\n7 — влюблен(-а);\n8 — в гражданском браке.')
+        status = re.escape(input('> '))
+        if status.isdigit() and 0 < int(status) < 9:
+            return status
+        else:
+            print('Некорректное семейное положение')
+            status = None
+
 
 
 def start(user, token, db):
@@ -103,12 +127,9 @@ def start(user, token, db):
 
         if user_input == '1':
             age_from, age_to = age_input()
-            sex = input_some_sex()
-            city = input('Введите город поиска: ')
-            print('Введите семейное положение.')
-            print('1 — не женат (не замужем);\n2 — встречается;\n3 — помолвлен(-а);\n4 — женат (замужем);\n'
-                  '5 — всё сложно;\n6 — в активном поиске;\n7 — влюблен(-а);\n8 — в гражданском браке.')
-            status = input('> ')
+            sex = sex_input()
+            city = city_input()
+            status = status_input()
 
             users = prepare_users(user.search_users(age_from, age_to, sex, city, status), token, db)
 
@@ -116,7 +137,7 @@ def start(user, token, db):
 
             write_data_to_json(data)
 
-            mongo.read_data(data, db)
+            mongo.write_data(data, db)
         elif user_input == '0':
             break
         else:
