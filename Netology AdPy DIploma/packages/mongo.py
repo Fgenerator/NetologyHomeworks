@@ -7,7 +7,7 @@ def prepare_db():
     return db
 
 
-def read_data(data, db):
+def write_data(data, db):
     vk_users_collection = db.users
     vk_users_collection.insert_many(data)
 
