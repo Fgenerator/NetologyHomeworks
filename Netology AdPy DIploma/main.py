@@ -60,6 +60,37 @@ def write_data_to_json(data_to_write):
     print('Result writed to data.json file')
 
 
+def age_input():
+    age_from, age_to = None, None
+    while not age_from:
+        age_from = input('Введите нижнюю границу возраста для поиска (положительное число): ')
+        if age_from.isdigit() and int(age_from) > 0:
+            ...
+        else:
+            print('Некорректный возраст')
+            age_from = None
+    while not age_to:
+        age_to = input('Введите верхнюю границу возраста для поиска (положительное число, большее нижней '
+                       'границы поиска): ')
+        if age_to.isdigit() and int(age_to) > int(age_from):
+            ...
+        else:
+            print('Некорректный возраст')
+            age_to = None
+    return age_from, age_to
+
+
+def input_some_sex():
+    sex = None
+    while not sex:
+        sex = input('Введите пол (0 - любой, 1 - жен, 2 - муж): ')
+        if sex == '0' or sex == '1' or sex == '2':
+            return sex
+        else:
+            print('Некорректный пол')
+            sex = None
+
+
 def start(user, token, db):
     print('VKinder')
 
@@ -71,9 +102,8 @@ def start(user, token, db):
         user_input = input('> ')
 
         if user_input == '1':
-            age_from = input('Введите нижнюю границу возраста для поиска: ')
-            age_to = input('Введите верхнюю границу возраста для поиска: ')
-            sex = input('Введите пол (0 - любой, 1 - жен, 2 - муж): ')
+            age_from, age_to = age_input()
+            sex = input_some_sex()
             city = input('Введите город поиска: ')
             print('Введите семейное положение.')
             print('1 — не женат (не замужем);\n2 — встречается;\n3 — помолвлен(-а);\n4 — женат (замужем);\n'
