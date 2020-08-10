@@ -9,7 +9,10 @@ def prepare_db():
 
 def write_data(data, db):
     vk_users_collection = db.users
-    vk_users_collection.insert_many(data)
+    try:
+        vk_users_collection.insert_many(data)
+    except TypeError:
+        print('Поиск не дал новых результатов')
 
 
 def get_pages_from_collection(db):
