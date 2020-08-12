@@ -50,7 +50,6 @@ def prepare_data_to_json(internal_users):
             'page': int_user.page,
             'photos': get_top_3_photos(sort_photos(prepare_photos(int_user.get_photos())))
         })
-    #print('data prepared to json')
     return data
 
 
@@ -88,7 +87,6 @@ def sex_input():
             sex = None
 
 
-
 def city_input():
     city = None
     while not city:
@@ -112,7 +110,6 @@ def status_input():
         else:
             print('Некорректное семейное положение')
             status = None
-
 
 
 def start(user, token, db):
