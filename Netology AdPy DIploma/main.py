@@ -1,6 +1,6 @@
-from vkauth import VKAuth
-from users import User
-import mongo
+from packages.vkauth import VKAuth
+from packages.users import User
+import packages.mongo as mongo
 from pprint import pprint
 from operator import itemgetter
 import json
@@ -112,6 +112,19 @@ def status_input():
             status = None
 
 
+def authorize():
+    vk_auth = VKAuth(['photos', 'friends'], '7556238', '5.89')
+
+    vk_auth.auth()
+
+    print('Authorized successfully\n')
+
+    access_token = vk_auth.get_token()
+    user_id = vk_auth.get_user_id()
+
+    return access_token, user_id
+
+
 def start(user, token, db):
     print('VKinder')
 
@@ -142,14 +155,8 @@ def start(user, token, db):
 
 
 def main():
-    vk_auth = VKAuth(['photos', 'friends'], '7556238', '5.89')
+    access_token, user_id = authorize()
 
-    vk_auth.auth()
-
-    print('Authorized successfully\n')
-
-    access_token = vk_auth.get_token()
-    user_id = vk_auth.get_user_id()
     vk_users_db = mongo.prepare_db()
 
     user = User(user_id, access_token)
