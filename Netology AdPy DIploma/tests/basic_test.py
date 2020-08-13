@@ -6,6 +6,7 @@ from unittest.mock import patch
 import main
 
 from pymongo import MongoClient
+import json
 
 
 def auth():
@@ -33,6 +34,15 @@ def prepare_temp_db():
     client = MongoClient()
     db = client['temp_db']
     return db
+
+
+def prepare_users():
+    db = prepare_temp_db()
+    token = auth()[0]
+    users = search_users()
+    users = main.prepare_users(users, token, db)
+
+    return users
 
 
 def test_auth():
@@ -79,15 +89,6 @@ def test_prepare_users():
         assert user.id
 
 
-def prepare_users():
-    db = prepare_temp_db()
-    token = auth()[0]
-    users = search_users()
-    users = main.prepare_users(users, token, db)
-
-    return users
-
-
 def test_prepare_data():
     users = prepare_users()
     users = main.prepare_data_to_json(users)
@@ -95,8 +96,19 @@ def test_prepare_data():
         assert user['photos']
 
 
-def test_write_data_to_json():
-    ...
+def prepare_data_to_json():
+    users = main.prepare_data_to_json(prepare_users())
+    return users
+
+
+def test_write_data_to_json(tmpdir):
+    data = prepare_data_to_json()
+
+    file = tmpdir.join('tmp.json')
+
+    main.write_data_to_json(data, file.strpath)
+
+    assert json.load(file) == data
 
 
 def test_write_data_to_db():
