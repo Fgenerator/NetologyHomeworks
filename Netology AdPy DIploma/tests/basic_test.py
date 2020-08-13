@@ -10,10 +10,22 @@ import main
 
 
 def auth():
-    with patch('builtins.input', side_effect=['login']):
-        with patch('getpass.getpass', side_effect=['pass']):
+    with patch('builtins.input', return_value='login'):
+        with patch('getpass.getpass', return_value='password'):
             access_token, user_id = main.authorize()
     return access_token, user_id
+
+
+def create_user():
+    access_token, user_id = auth()
+    user = User(user_id, access_token)
+    return user
+
+
+def search_users():
+    user = create_user()
+    users = user.search_users(20, 25, 1, 'Москва', 6)
+    return users
 
 
 def test_auth():
@@ -36,5 +48,23 @@ def test_user_creation():
     assert user.id == user_id
 
 
+def test_search_users():
+    user = create_user()
+    users = user.search_users(20, 25, 1, 'Москва', 6)
+
+    assert users[0]['id']
 
 
+def test_negative_search_users():
+    user = create_user()
+    users = user.search_users(100, 25, 1, 'Москва', 6)
+
+    assert not users
+
+
+def test_prepare_users():
+    users = search_users()
+    users = main.prepare_users(users)
+
+    for user in users:
+        assert user.id
