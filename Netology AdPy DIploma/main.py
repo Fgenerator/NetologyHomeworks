@@ -53,8 +53,8 @@ def prepare_data_to_json(internal_users):
     return data
 
 
-def write_data_to_json(data_to_write):
-    with open('data.json', 'w', encoding='utf-8') as f:
+def write_data_to_json(data_to_write, fname):
+    with open(fname, 'w', encoding='utf-8') as f:
         json.dump(data_to_write, f, ensure_ascii=False, indent=4)
 
     print('Result writed to data.json file')
@@ -113,7 +113,7 @@ def status_input():
 
 
 def authorize():
-    vk_auth = VKAuth(['photos', 'friends'], '7556238', '5.89')
+    vk_auth = VKAuth(['photos', 'friends'], '7566412', '5.89')
 
     vk_auth.auth()
 
@@ -121,6 +121,7 @@ def authorize():
 
     access_token = vk_auth.get_token()
     user_id = vk_auth.get_user_id()
+
 
     return access_token, user_id
 
@@ -145,7 +146,7 @@ def start(user, token, db):
 
             data = prepare_data_to_json(users)
 
-            write_data_to_json(data)
+            write_data_to_json(data, 'data.json')
 
             mongo.write_data(data, db)
         elif user_input == '0':
