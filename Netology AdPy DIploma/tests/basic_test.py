@@ -45,6 +45,11 @@ def prepare_users():
     return users
 
 
+def prepare_data_to_json():
+    users = main.prepare_data_to_json(prepare_users())
+    return users
+
+
 def test_auth():
     access_token, user_id = auth()
 
@@ -59,7 +64,6 @@ def test_prepare_db():
 
 def test_user_creation():
     access_token, user_id = auth()
-
     user = User(user_id, access_token)
 
     assert user.id == user_id
@@ -92,24 +96,22 @@ def test_prepare_users():
 def test_prepare_data():
     users = prepare_users()
     users = main.prepare_data_to_json(users)
+
     for user in users:
         assert user['photos']
 
 
-def prepare_data_to_json():
-    users = main.prepare_data_to_json(prepare_users())
-    return users
-
-
 def test_write_data_to_json(tmpdir):
     data = prepare_data_to_json()
-
     file = tmpdir.join('tmp.json')
-
     main.write_data_to_json(data, file.strpath)
 
     assert json.load(file) == data
 
 
 def test_write_data_to_db():
-    ...
+    data = prepare_data_to_json()
+    db = prepare_temp_db()
+    mongo.write_data(data, db)
+
+    assert list(db.users.find()) == data
